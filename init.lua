@@ -13,10 +13,7 @@ vim.o.timeoutlen = 300                 -- ms wait time before checking if typing
 vim.o.completeopt = 'menuone,noselect' -- autocomplete config
 vim.o.termguicolors = true             -- enable pretty colors
 vim.wo.colorcolumn = '80'              -- set line limit
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-vim.diagnostic.config({
+vim.diagnostic.config({                -- prevent inline diagnostics
   virtual_text = false,
   signs = true,
   underline = true,
@@ -25,43 +22,44 @@ vim.diagnostic.config({
 vim.cmd('colorscheme slate') -- set theme
 
 --[[ KEYMAPS ]]
-
--- navigate word wraps
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 
+-- navigate word wraps
+for _, key in pairs({ 'k', 'j' }) do
+  local callback = "v:count == 0 ? 'g" .. key .. "' : '" .. key .. "'"
+  local opts = { expr = true, silent = true }
+  vim.keymap.set('n', key, callback, opts)
+end
+
+-- lsp
 local function on_attach(_, bufnr)
-  local function nmap(keys, callback, desc)
-    vim.keymap.set('n', '<leader>' .. keys, callback, { desc = desc, buffer = bufnr })
-  end
-  local function nfmap(keys, callback, desc)
-    nmap('f' .. keys, callback, '[f]ind ' .. desc)
-  end
-
-  for _, key in pairs({ 'k', 'j' }) do
-    local callback = "v:count == 0 ? 'g" .. key .. "' : '" .. key .. "'"
-    local opts = { expr = true, silent = true }
-    vim.keymap.set('n', '<leader>' .. key, callback, opts)
-  end
-
-  -- set diagnostics
-  nmap('dp', vim.diagnostic.goto_prev, '[d]iagnostic [p]revious')
-  nmap('dn', vim.diagnostic.goto_next, '[d]iagnostic [n]ext')
-  nmap('do', vim.diagnostic.open_float, '[d]iagnostic [o]pen')
-  nmap('dl', vim.diagnostic.setloclist, '[d]iagnostic [l]ist')
-
-  -- lsp
-  nmap('p', function() vim.cmd('Format') end, '[p]retty')
-  nmap('rn', vim.lsp.buf.rename, '[r]e[n]ame')
-  nmap('ca', vim.lsp.buf.code_action, '[c]ode [a]ction')
-  nmap('hd', vim.lsp.buf.hover, '[h]over [d]ocumentation')
-  nmap('sh', vim.lsp.buf.signature_help, '[s]ignature [h]elp')
-
   local telescope = require('telescope.builtin')
-  nfmap('d', telescope.lsp_definitions, '[d]efiniton')
-  nfmap('r', telescope.lsp_references, '[r]eferences')
-  nfmap('sd', telescope.lsp_document_symbols, '[s]ymbols ([d]ocument)')
-  nfmap('sw', telescope.lsp_dynamic_workspace_symbols, '[s]ymbols ([w]orkspace)')
+  local wk = require('which-key')
+  wk.register({
+    p = { function() vim.cmd('Format') end, '[p]retty' },
+    rn = { vim.lsp.buf.rename, '[r]e[n]ame' },
+    ca = { vim.lsp.buf.code_action, '[c]ode [a]ction' },
+    hd = { vim.lsp.buf.hover, '[h]over [d]ocumentation' },
+    sh = { vim.lsp.buf.signature_help, '[s]ignature [h]elp' },
+    f = {
+      name = '[f]ind',
+      d = { telescope.lsp_definitions, '[d]efiniton' },
+      r = { telescope.lsp_references, '[r]eferences' },
+      s = {
+        name = '[s]ymbols',
+        d = { telescope.lsp_document_symbols, '[d]ocument' },
+        w = { telescope.lsp_dynamic_workspace_symbols, '[w]orkspace' },
+      },
+    },
+    d = {
+      name = '[d]iagnostic',
+      p = { vim.diagnostic.goto_prev, '[p]revious' },
+      n = { vim.diagnostic.goto_next, '[n]ext' },
+      o = { vim.diagnostic.open_float, '[o]pen' },
+      l = { vim.diagnostic.setloclist, '[l]ist' },
+    }
+  }, { prefix = '<leader>', buffer = bufnr })
 
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.lsp.buf.format()
