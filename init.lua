@@ -144,7 +144,8 @@ require('lazy').setup({
       'hrsh7th/cmp-nvim-lsp',
       'rafamadriz/friendly-snippets',
     },
-  }
+  },
+  -- prevent inline diagnostics
 }, {})
 
 -- [[ TELESCOPE ]]
@@ -211,6 +212,7 @@ cmp.setup({
       luasnip.lsp_expand(args.body)
     end,
   },
+  ---@diagnostic disable-next-line: missing-fields
   completion = {
     completeopt = 'menu,menuone,noinsert',
   },
