@@ -37,6 +37,7 @@ local function on_attach(_, bufnr)
   local telescope = require('telescope.builtin')
   local wk = require('which-key')
   wk.register({
+    ex = { function() vim.cmd('Ex') end, '[ex]plorer' },
     p = { function() vim.cmd('Format') end, '[p]retty' },
     rn = { vim.lsp.buf.rename, '[r]e[n]ame' },
     ca = { vim.lsp.buf.code_action, '[c]ode [a]ction' },
@@ -212,7 +213,6 @@ cmp.setup({
       luasnip.lsp_expand(args.body)
     end,
   },
-  ---@diagnostic disable-next-line: missing-fields
   completion = {
     completeopt = 'menu,menuone,noinsert',
   },
