@@ -166,12 +166,18 @@ pcall(telescope.load_extension('fzf'))
 -- [[ LSP ]]
 
 local servers = {
+  bashls = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     }
-  }
+  },
+  tsserver = {},
+  html = {
+    filetypes = { 'html', 'jsx', 'javascriptreact', 'tsx', 'typescriptreact' },
+  },
+  intelephense = {},
 }
 
 require('mason').setup()
