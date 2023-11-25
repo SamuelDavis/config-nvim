@@ -92,6 +92,14 @@ require('lazy').setup({
   },
   -- gitsigns
   { 'lewis6991/gitsigns.nvim' },
+  {
+    -- Theme inspired by Atom
+    'navarasu/onedark.nvim',
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme 'onedark'
+    end,
+  },
   -- status line
   {
     'nvim-lualine/lualine.nvim',
@@ -100,6 +108,7 @@ require('lazy').setup({
         icons_enabled = false,
         component_separators = '|',
         section_separators = '',
+        theme = 'onedark',
       }
     }
   },
