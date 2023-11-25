@@ -198,7 +198,6 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 local mason_lspconfig = require('mason-lspconfig')
 local lspconfig = require('lspconfig')
-
 mason_lspconfig.setup({
   ensure_installed = vim.tbl_keys(servers),
 })
@@ -209,7 +208,10 @@ mason_lspconfig.setup_handlers({
       capabilities = capabilities,
       on_attach = on_attach,
       settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes
+      filetypes = (servers[server_name] or {}).filetypes,
+      root_dir = (servers[server_name] or {}).root_dir or function(fname)
+        return lspconfig.util.find_git_ancestor(fname) or lspconfig.util.path.dirname(fname)
+      end,
     })
   end
 })
