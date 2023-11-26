@@ -88,6 +88,20 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+  -- quick-comment
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      toggler = {
+        line = '<leader>/',
+        block = '<leader>*',
+      },
+      opleader = {
+        line = '<leader>/',
+        block = '<leader>*',
+      },
+    }
+  },
   -- auto tabstop/shiftwidth
   { 'tpope/vim-sleuth' },
   -- keybind help
