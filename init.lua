@@ -19,7 +19,8 @@ vim.diagnostic.config({                -- prevent inline diagnostics
   underline = true,
   update_in_insert = false,
 })
-vim.cmd('colorscheme slate') -- set theme
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
 
 --[[ KEYMAPS ]]
 vim.g.mapleader = ','
@@ -45,6 +46,7 @@ local function on_attach(_, bufnr)
     sh = { vim.lsp.buf.signature_help, '[s]ignature [h]elp' },
     f = {
       name = '[f]ind',
+      f = { telescope.find_files, '[f]iles' },
       d = { telescope.lsp_definitions, '[d]efiniton' },
       r = { telescope.lsp_references, '[r]eferences' },
       s = {
