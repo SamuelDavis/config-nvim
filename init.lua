@@ -42,7 +42,10 @@ local function on_attach(_, bufnr)
     p = { function() vim.cmd('Format') end, '[p]retty' },
     rn = { vim.lsp.buf.rename, '[r]e[n]ame' },
     ca = { vim.lsp.buf.code_action, '[c]ode [a]ction' },
-    hd = { vim.lsp.buf.hover, '[h]over [d]ocumentation' },
+    h = {
+      d = { vim.lsp.buf.hover, '[h]over [d]ocumentation' },
+      t = { telescope.lsp_type_definitions, '[h]over [t]ype definition' },
+    },
     sh = { vim.lsp.buf.signature_help, '[s]ignature [h]elp' },
     f = {
       name = '[f]ind',
@@ -177,6 +180,7 @@ pcall(telescope.load_extension('fzf'))
 -- [[ LSP ]]
 
 local servers = {
+  gopls = {},
   bashls = {},
   lua_ls = {
     Lua = {
@@ -272,3 +276,17 @@ vim.api.nvim_create_autocmd(
     end
   }
 )
+
+-- [[ SNIPPETS ]]
+local ls = require('luasnip')
+ls.add_snippets(nil, {
+  html = {
+    ls.snippet({
+      trig = "favicon",
+      namr = "Favicon",
+      descr = "Empty HTML favicon",
+    }, {
+      ls.text_node({ '<link rel="icon" href="data:;base64,iVBORw0KGgo=">' }),
+    })
+  }
+})
