@@ -253,6 +253,7 @@ cmp.setup({
       luasnip.lsp_expand(args.body)
     end,
   },
+  ---@diagnostic disable-next-line: missing-fields
   completion = {
     completeopt = 'menu,menuone,noinsert',
   },
