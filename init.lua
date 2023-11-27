@@ -295,6 +295,24 @@ vim.api.nvim_create_autocmd(
   }
 )
 
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client_id = args.data.client_id
+    local client = vim.lsp.get_client_by_id(client_id)
+    local bufnr = args.buf
+
+    if client.name == 'tsserver' then
+      vim.keymap.set('n', '<leader>o', function()
+        vim.lsp.buf.execute_command({
+          command = "_typescript.organizeImports",
+          arguments = { vim.api.nvim_buf_get_name(bufnr) },
+          title = "Organize Imports",
+        })
+      end, { buffer = bufnr, desc = "[o]rganize imports" })
+    end
+  end
+})
+
 -- [[ SNIPPETS ]]
 local ls = require('luasnip')
 ls.add_snippets(nil, {
