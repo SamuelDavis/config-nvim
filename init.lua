@@ -344,6 +344,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client_id = args.data.client_id
     local client = vim.lsp.get_client_by_id(client_id)
     local bufnr = args.buf
+    local wk = require('which-key')
 
     if client.name == 'tsserver' then
       vim.api.nvim_buf_create_user_command(bufnr, 'OrganizeImports', function(_)
@@ -353,26 +354,31 @@ vim.api.nvim_create_autocmd("LspAttach", {
           title = 'Organize Imports',
         })
       end, { desc = 'Sort and remove unused imports' })
-      vim.keymap.set('n', '<leader>pi', vim.cmd.OrganizeImports, {
-        buffer = bufnr, desc = '[i]mports'
-      })
+      wk.register({
+        i = { vim.cmd.OrganizeImports, '[i]mports' }
+      }, { prefix = '<leader>p', buffer = bufnr })
     end
     if client.name == 'eslint' then
       vim.keymap.set('n', '<leader>pe', vim.cmd.EslintFixAll, {
         buffer = bufnr, desc = '[e]slint'
       })
+      wk.register({
+        e = { vim.cmd.OrganizeImports, '[e]slint' }
+      }, { prefix = '<leader>p', buffer = bufnr })
     end
 
     if client_is_active('tsserver') and client_is_active('eslint') then
-      vim.keymap.set('n', '<leader>pw', function()
-        for _, cmd in ipairs({
-          'OrganizeImports',
-          'EslintFixAll',
-          'Prettier',
-        }) do
-          vim.cmd(cmd)
-        end
-      end, { buffer = bufnr, desc = '[w]eb' })
+      wk.register({
+        w = { function()
+          for _, cmd in ipairs({
+            'OrganizeImports',
+            'EslintFixAll',
+            'Prettier',
+          }) do
+            vim.cmd(cmd)
+          end
+        end, '[w]eb' }
+      }, { prefix = '<leader>p', buffer = bufnr })
     end
   end
 })
