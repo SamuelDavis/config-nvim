@@ -39,8 +39,11 @@ local function on_attach(_, bufnr)
   local wk = require('which-key')
   wk.register({
     ex = { function() vim.cmd('Ex') end, '[ex]plorer' },
-    p = { function() vim.cmd('Prettier') end, '[p]rettier' },
-    P = { function() vim.cmd('Format') end, '[P]retty' },
+    p = {
+      name = 'pretty',
+      p = { function() vim.cmd('Prettier') end, '[p]rettier' },
+      l = { function() vim.cmd('Format') end, '[l]sp' },
+    },
     rn = { vim.lsp.buf.rename, '[r]e[n]ame' },
     ca = { vim.lsp.buf.code_action, '[c]ode [a]ction' },
     h = {
@@ -206,6 +209,7 @@ local servers = {
       telemetry = { enable = false },
     }
   },
+  eslint = {},
   tsserver = {},
   html = {
     filetypes = { 'html', 'jsx', 'javascriptreact', 'tsx', 'typescriptreact' },
@@ -296,6 +300,18 @@ vim.api.nvim_create_autocmd(
   }
 )
 
+function client_is_active(name)
+  local clients = vim.lsp.get_active_clients()
+  for _, client in ipairs(clients or {}) do
+    print(client.name .. ' active')
+    if client.name == name then
+      return true
+    end
+  end
+
+  return false
+end
+
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client_id = args.data.client_id
@@ -303,13 +319,33 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local bufnr = args.buf
 
     if client.name == 'tsserver' then
-      vim.keymap.set('n', '<leader>o', function()
+      vim.api.nvim_buf_create_user_command(bufnr, 'OrganizeImports', function(_)
         vim.lsp.buf.execute_command({
-          command = "_typescript.organizeImports",
+          command = '_typescript.organizeImports',
           arguments = { vim.api.nvim_buf_get_name(bufnr) },
-          title = "Organize Imports",
+          title = 'Organize Imports',
         })
-      end, { buffer = bufnr, desc = "[o]rganize imports" })
+      end, { desc = 'Sort and remove unused imports' })
+      vim.keymap.set('n', '<leader>pi', function()
+        vim.cmd('OrganizeImports')
+      end, { buffer = bufnr, desc = '[i]mports' })
+    end
+    if client.name == 'eslint' then
+      vim.keymap.set('n', '<leader>pe', function()
+        vim.cmd('EslintFixAll')
+      end, { buffer = bufnr, desc = '[e]slint' })
+    end
+
+    if client_is_active('tsserver') and client_is_active('eslint') then
+      vim.keymap.set('n', '<leader>pw', function()
+        for _, cmd in ipairs({
+          'OrganizeImports',
+          'EslintFixAll',
+          'Prettier',
+        }) do
+          vim.cmd(cmd)
+        end
+      end, { buffer = bufnr, desc = '[w]eb' })
     end
   end
 })
