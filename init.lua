@@ -48,9 +48,12 @@ local function on_attach(_, bufnr)
   local telescope = require('telescope.builtin')
   local wk = require('which-key')
   wk.register({
-    ex = { vim.cmd.Ex, '[ex]plorer' },
-    rn = { vim.lsp.buf.rename, '[r]e[n]ame' },
-    ca = { vim.lsp.buf.code_action, '[c]ode [a]ction' },
+    x = { vim.cmd.Ex, 'e[x]plorer' },
+    c = {
+      name = '[c]ode',
+      a = { vim.lsp.buf.code_action, '[a]ction' },
+      r = { vim.lsp.buf.rename, '[r]ename' }
+    },
     p = {
       name = '[p]retty',
       p = { vim.cmd.Prettier, '[p]rettier' },
