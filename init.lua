@@ -22,6 +22,16 @@ vim.diagnostic.config({                -- prevent inline diagnostics
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 
+if vim.fn.has("persistent_undo") then
+  local undopath = vim.fn.stdpath('data') .. '/.undodir/'
+  if not vim.loop.fs_stat(undopath) then
+    vim.loop.fs_mkdir(undopath, 0700)
+  end
+
+  vim.o.undodir = undopath
+  vim.o.undofile = false
+end
+
 --[[ KEYMAPS ]]
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
@@ -93,6 +103,20 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+  -- undo history
+  {
+    'mbbill/undotree',
+    config = function()
+      require('which-key').register({
+        u = {
+          name = 'undo',
+          s = { vim.cmd.UndotreeShow, '[s]how' },
+          h = { vim.cmd.UndotreeHide, '[h]ide' },
+          t = { vim.cmd.UndotreeToggle, '[t]oggle' },
+        }
+      }, { prefix = '<leader>' })
+    end
+  },
   -- formatting
   { 'prettier/vim-prettier', build = 'npm install', },
   -- quick-comment
