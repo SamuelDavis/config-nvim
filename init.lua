@@ -48,19 +48,20 @@ local function on_attach(_, bufnr)
   local telescope = require('telescope.builtin')
   local wk = require('which-key')
   wk.register({
-    ex = { function() vim.cmd('Ex') end, '[ex]plorer' },
-    p = {
-      name = 'pretty',
-      p = { function() vim.cmd('Prettier') end, '[p]rettier' },
-      l = { function() vim.cmd('Format') end, '[l]sp' },
-    },
+    ex = { vim.cmd.Ex, '[ex]plorer' },
     rn = { vim.lsp.buf.rename, '[r]e[n]ame' },
     ca = { vim.lsp.buf.code_action, '[c]ode [a]ction' },
+    p = {
+      name = '[p]retty',
+      p = { vim.cmd.Prettier, '[p]rettier' },
+      l = { vim.cmd.Format, '[l]sp' },
+    },
     h = {
+      name = '[h]over',
+      s = { vim.lsp.buf.signature_help, '[s]ignature' },
       d = { vim.lsp.buf.hover, '[h]over [d]ocumentation' },
       t = { telescope.lsp_type_definitions, '[h]over [t]ype definition' },
     },
-    sh = { vim.lsp.buf.signature_help, '[s]ignature [h]elp' },
     f = {
       name = '[f]ind',
       g = { telescope.live_grep, '[g]rep' },
@@ -109,7 +110,7 @@ require('lazy').setup({
     config = function()
       require('which-key').register({
         u = {
-          name = 'undo',
+          name = '[u]ndo',
           s = { vim.cmd.UndotreeShow, '[s]how' },
           h = { vim.cmd.UndotreeHide, '[h]ide' },
           t = { vim.cmd.UndotreeToggle, '[t]oggle' },
@@ -349,14 +350,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
           title = 'Organize Imports',
         })
       end, { desc = 'Sort and remove unused imports' })
-      vim.keymap.set('n', '<leader>pi', function()
-        vim.cmd('OrganizeImports')
-      end, { buffer = bufnr, desc = '[i]mports' })
+      vim.keymap.set('n', '<leader>pi', vim.cmd.OrganizeImports, {
+        buffer = bufnr, desc = '[i]mports'
+      })
     end
     if client.name == 'eslint' then
-      vim.keymap.set('n', '<leader>pe', function()
-        vim.cmd('EslintFixAll')
-      end, { buffer = bufnr, desc = '[e]slint' })
+      vim.keymap.set('n', '<leader>pe', vim.cmd.EslintFixAll, {
+        buffer = bufnr, desc = '[e]slint'
+      })
     end
 
     if client_is_active('tsserver') and client_is_active('eslint') then
