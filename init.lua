@@ -303,7 +303,6 @@ vim.api.nvim_create_autocmd(
 function client_is_active(name)
   local clients = vim.lsp.get_active_clients()
   for _, client in ipairs(clients or {}) do
-    print(client.name .. ' active')
     if client.name == name then
       return true
     end
