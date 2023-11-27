@@ -39,7 +39,8 @@ local function on_attach(_, bufnr)
   local wk = require('which-key')
   wk.register({
     ex = { function() vim.cmd('Ex') end, '[ex]plorer' },
-    p = { function() vim.cmd('Format') end, '[p]retty' },
+    p = { function() vim.cmd('Prettier') end, '[p]rettier' },
+    P = { function() vim.cmd('Format') end, '[P]retty' },
     rn = { vim.lsp.buf.rename, '[r]e[n]ame' },
     ca = { vim.lsp.buf.code_action, '[c]ode [a]ction' },
     h = {
@@ -88,6 +89,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+  -- formatting
+  { 'prettier/vim-prettier', build = 'npm install', },
   -- quick-comment
   {
     'numToStr/Comment.nvim',
