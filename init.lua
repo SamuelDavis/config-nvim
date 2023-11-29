@@ -44,7 +44,7 @@ for _, key in pairs({ 'k', 'j' }) do
 end
 
 -- lsp
-local function on_attach(_, bufnr)
+local function on_attach(client, bufnr)
   local telescope = require('telescope.builtin')
   local wk = require('which-key')
   wk.register({
@@ -89,6 +89,16 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
+
+  if client.name == 'tsserver' then
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.lsp.handlers['textDocument/publishDiagnostics'] = function(_, result, ctx, config)
+      result['diagnostics'] = vim.tbl_filter(function(diagnostic)
+        return diagnostic.message ~= "Cannot find name 'React'."
+      end, result.diagnostics)
+      vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
+    end
+  end
 end
 
 
