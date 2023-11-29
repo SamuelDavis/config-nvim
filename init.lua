@@ -1,9 +1,10 @@
 --[[ OPTIONS ]]
-vim.wo.number = true                   -- enable line numbers
-vim.o.mouse = 'a'                      -- enable mouse support in all modes
-vim.o.clipboard = 'unnamedplus'        -- share system clipboard
-vim.o.breakindent = true               -- indent line wraps
-vim.o.undofile = true                  -- save history
+vim.wo.number = true            -- enable line numbers
+vim.o.mouse = 'a'               -- enable mouse support in all modes
+vim.o.clipboard = 'unnamedplus' -- share system clipboard
+vim.o.breakindent = true        -- indent line wraps
+vim.notify(vim.o.undodir)
+
 vim.o.hlsearch = false                 -- don't highlight searches
 vim.o.ignorecase = true                -- case-insensitive unless \C prefix applied
 vim.o.smartcase = true                 -- case-insensitive if search is all lowercase
@@ -23,13 +24,12 @@ vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 
 if vim.fn.has("persistent_undo") then
-  local undopath = vim.fn.stdpath('data') .. '/.undodir/'
-  if not vim.loop.fs_stat(undopath) then
-    vim.loop.fs_mkdir(undopath, 0700)
+  vim.o.undofile = true
+  vim.o.swapfile = false
+  vim.o.undodir = vim.fn.stdpath('data') .. '/.undodir/'
+  if not vim.fn.isdirectory(vim.o.undodir) then
+    vim.fn.mkdir(vim.o.undodir, "p", 0700)
   end
-
-  vim.o.undodir = undopath
-  vim.o.undofile = false
 end
 
 --[[ KEYMAPS ]]
@@ -117,6 +117,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+  -- autosave
+  { 'pocco81/auto-save.nvim' },
   -- undo history
   {
     'mbbill/undotree',
