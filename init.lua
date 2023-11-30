@@ -226,12 +226,19 @@ require('lazy').setup({
 
 -- [[ TELESCOPE ]]
 local telescope = require('telescope')
+local actions = require('telescope.actions')
 telescope.setup({
   defaults = {
     mappings = {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
+        ['<CR>'] = actions.select_tab,
+        ['<C-b>'] = actions.select_default,
+      },
+      n = {
+        ['<CR>'] = actions.select_tab,
+        ['<C-b>'] = actions.select_default,
       }
     }
   }
