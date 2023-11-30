@@ -233,12 +233,10 @@ telescope.setup({
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
-        ['<CR>'] = actions.select_tab,
-        ['<C-b>'] = actions.select_default,
+        ['<C-CR>'] = actions.select_tab,
       },
       n = {
-        ['<CR>'] = actions.select_tab,
-        ['<C-b>'] = actions.select_default,
+        ['<C-CR>'] = actions.select_tab,
       }
     }
   }
