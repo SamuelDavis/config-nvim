@@ -259,7 +259,7 @@ local servers = {
   html = {
     filetypes = { 'html', 'jsx', 'javascriptreact', 'tsx', 'typescriptreact' },
   },
-  intelephense = {},
+  phpactor = {},
 }
 
 require('mason').setup()
