@@ -20,7 +20,7 @@ vim.diagnostic.config({                -- prevent inline diagnostics
   underline = true,
   update_in_insert = false,
 })
-vim.o.tabstop = 2
+vim.o.tabstop = 2 -- default indentation
 vim.o.shiftwidth = 2
 
 if vim.fn.has("persistent_undo") then
@@ -196,10 +196,24 @@ require('lazy').setup({
   -- highlight, edit, and navigate code
   {
     'nvim-treesitter/nvim-treesitter',
+    opts = {
+      highlight = {
+        enable = true,
+      },
+      fold = {
+        enable = false,
+      }
+    },
     build = ':TSUpdate',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
+    config = function()
+      vim.wo.foldmethod = 'expr'
+      vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+      vim.wo.foldenable = false
+      vim.wo.foldlevel = 999
+    end,
   },
   -- lsp
   {
