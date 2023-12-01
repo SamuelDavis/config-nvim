@@ -416,14 +416,25 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- [[ SNIPPETS ]]
 local ls = require('luasnip')
+local t = ls.text_node
+local i = ls.insert_node
 ls.add_snippets(nil, {
   html = {
     ls.snippet({
       trig = "favicon",
-      namr = "Favicon",
-      descr = "Empty HTML favicon",
+      descr = "empty HTML favicon",
     }, {
-      ls.text_node({ '<link rel="icon" href="data:;base64,iVBORw0KGgo=">' }),
+      t({ '<link rel="icon" href="data:;base64,iVBORw0KGgo=">' }),
     })
+  },
+  php = {
+    ls.snippet({
+      trig = "wse",
+      descr = "write to stderr"
+    }, {
+      t({ 'fwrite(STDERR, json_encode(' }),
+      i(1),
+      t({ ', JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);' }),
+    }),
   }
 })
