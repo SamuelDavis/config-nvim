@@ -1,9 +1,8 @@
 --[[ OPTIONS ]]
-vim.wo.number = true            -- enable line numbers
-vim.o.mouse = 'a'               -- enable mouse support in all modes
-vim.o.clipboard = 'unnamedplus' -- share system clipboard
-vim.o.breakindent = true        -- indent line wraps
-vim.notify(vim.o.undodir)
+vim.wo.number = true                   -- enable line numbers
+vim.o.mouse = 'a'                      -- enable mouse support in all modes
+vim.o.clipboard = 'unnamedplus'        -- share system clipboard
+vim.o.breakindent = true               -- indent line wraps
 
 vim.o.hlsearch = false                 -- don't highlight searches
 vim.o.ignorecase = true                -- case-insensitive unless \C prefix applied
@@ -67,8 +66,6 @@ local function on_attach(client, bufnr)
     },
     f = {
       name = '[f]ind',
-      g = { telescope.live_grep, '[g]rep' },
-      f = { telescope.find_files, '[f]iles' },
       d = { telescope.lsp_definitions, '[d]efiniton' },
       r = { telescope.lsp_references, '[r]eferences' },
       s = {
@@ -192,6 +189,17 @@ require('lazy').setup({
         end
       },
     },
+    config = function()
+      local telescope = require('telescope.builtin')
+      local wk = require('which-key')
+      wk.register({
+        f = {
+          name = '[f]ind',
+          g = { telescope.live_grep, '[g]rep' },
+          f = { telescope.find_files, '[f]iles' },
+        }
+      }, { prefix = '<leader>' })
+    end
   },
   -- highlight, edit, and navigate code
   {
@@ -253,9 +261,15 @@ telescope.setup({
         ['<C-CR>'] = actions.select_tab,
       }
     }
+  },
+  extensions = {
+    fzf = {},
   }
 })
-pcall(telescope.load_extension('fzf'))
+
+for _, name in ipairs({ 'fzf' }) do
+  telescope.load_extension(name)
+end
 
 -- [[ LSP ]]
 
